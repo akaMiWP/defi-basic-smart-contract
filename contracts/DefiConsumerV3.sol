@@ -3,8 +3,10 @@
 pragma solidity ^0.8.24;
 
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
-contract DefiConsumerV3 {
+contract DefiConsumerV3 is Ownable {
     mapping(string => AggregatorV3Interface) public priceFeeds;
 
     constructor() {
@@ -40,5 +42,9 @@ contract DefiConsumerV3 {
             /*uint80 answeredInRound*/
         ) = priceFeeds[priceFeed].latestRoundData();
         return answer;
+    }
+
+    function depositToken(address token, uint256 amount) external onlyOwner {
+        require(IERC20(token).transfer(msg.sender, amount), "Deposit failed");
     }
 }
