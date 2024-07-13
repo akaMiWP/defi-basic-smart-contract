@@ -108,7 +108,7 @@ describe("DefiConsumerV3", () => {
       );
     });
 
-    it("Should swap Token 1 for Token 2 based on Oracle price", async () => {
+    it("Should swap Token 1 for Token 2 based on Oracle price when input is an integer", async () => {
       input = ethers.parseEther("10");
       await token1
         .connect(addr1)
@@ -132,6 +132,32 @@ describe("DefiConsumerV3", () => {
       expect(
         await token2.balanceOf(await defiConsumerV3.getAddress())
       ).to.equal(ethers.parseEther("10"));
+    });
+
+    it("Should swap Token 1 for Token 2 based on Oracle price when input is not an integer", async () => {
+      input = ethers.parseEther("0.01");
+      await token1
+        .connect(addr1)
+        .approve(await defiConsumerV3.getAddress(), input);
+      await defiConsumerV3
+        .connect(addr1)
+        .swapTokens(
+          await token1.getAddress(),
+          await token2.getAddress(),
+          input
+        );
+      expect(await token1.balanceOf(await addr1.getAddress())).to.equal(
+        ethers.parseEther("29.99")
+      );
+      expect(
+        await token1.balanceOf(await defiConsumerV3.getAddress())
+      ).to.equal(ethers.parseEther("0.01"));
+      expect(await token2.balanceOf(await addr1.getAddress())).to.equal(
+        ethers.parseEther("0.04")
+      );
+      expect(
+        await token2.balanceOf(await defiConsumerV3.getAddress())
+      ).to.equal(ethers.parseEther("49.96"));
     });
   });
 });
