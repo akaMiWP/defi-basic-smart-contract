@@ -10,6 +10,6 @@ contract ERC20Mock is ERC20 {
         string memory symbol,
         uint256 totalSupply
     ) ERC20(name, symbol) {
-        _mint(msg.sender, totalSupply);
+        _mint(msg.sender, totalSupply * 10 ** decimals());
     }
 }

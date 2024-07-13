@@ -76,15 +76,17 @@ describe("DefiConsumerV3", () => {
       );
 
       // Fund addr1 with token 1
-      await token1.connect(owner).transfer(await addr1.getAddress(), 30);
+      await token1
+        .connect(owner)
+        .transfer(await addr1.getAddress(), ethers.parseEther("30"));
 
       // Fund DeFi contract with token2 via abi
       await token2
         .connect(owner)
-        .approve(await defiConsumerV3.getAddress(), 50);
+        .approve(await defiConsumerV3.getAddress(), ethers.parseEther("50"));
       await defiConsumerV3
         .connect(owner)
-        .depositToken(await token2.getAddress(), 50);
+        .depositToken(await token2.getAddress(), ethers.parseEther("50"));
 
       // Log addresses
       console.log("After setting up....");
@@ -107,7 +109,7 @@ describe("DefiConsumerV3", () => {
     });
 
     it("Should swap Token 1 for Token 2 based on Oracle price", async () => {
-      input = 10;
+      input = ethers.parseEther("10");
       await token1
         .connect(addr1)
         .approve(await defiConsumerV3.getAddress(), input);
@@ -118,14 +120,18 @@ describe("DefiConsumerV3", () => {
           await token2.getAddress(),
           input
         );
-      expect(await token1.balanceOf(await addr1.getAddress())).to.equal(20);
+      expect(await token1.balanceOf(await addr1.getAddress())).to.equal(
+        ethers.parseEther("20")
+      );
       expect(
         await token1.balanceOf(await defiConsumerV3.getAddress())
-      ).to.equal(10);
-      expect(await token2.balanceOf(await addr1.getAddress())).to.equal(40);
+      ).to.equal(ethers.parseEther("10"));
+      expect(await token2.balanceOf(await addr1.getAddress())).to.equal(
+        ethers.parseEther("40")
+      );
       expect(
         await token2.balanceOf(await defiConsumerV3.getAddress())
-      ).to.equal(10);
+      ).to.equal(ethers.parseEther("10"));
     });
   });
 });

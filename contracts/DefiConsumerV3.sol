@@ -71,11 +71,14 @@ contract DefiConsumerV3 is Ownable {
     function swapTokens(
         address token1,
         address token2,
-        uint256 amount
+        uint256 amount // parse in the smallest units
     ) external {
         int256 price = getChainlinkDataFeedLatestAnswer(token1, token2);
         require(price > 0, "Invalid price");
-        uint256 amountOfToken2 = (amount * uint256(price)) / 1e18;
+        uint8 token1Decimals = IERC20Metadata(token1).decimals();
+        uint8 token2Decimals = IERC20Metadata(token2).decimals();
+        uint256 amountOfToken2 = (amount * uint256(price)) /
+            (10 ** (18 + token1Decimals - token2Decimals));
         require(IERC20(token1).transferFrom(msg.sender, address(this), amount));
         require(IERC20(token2).transfer(msg.sender, amountOfToken2));
     }
