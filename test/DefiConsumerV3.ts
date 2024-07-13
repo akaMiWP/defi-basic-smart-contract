@@ -1,16 +1,18 @@
 import { ethers } from "hardhat";
+import { expect } from "chai";
 
 import ERC20MockJSON from "../artifacts/contracts/Mocks/ERC20Mock.sol/ERC20Mock.json";
 import AggregatorV3MockJSON from "../artifacts/contracts/Mocks/AggregatorV3Mock.sol/AggregatorV3Mock.json";
 import DefiConsumerV3JSON from "../artifacts/contracts/DefiConsumerV3.sol/DefiConsumerV3.json";
 
 describe("DefiConsumerV3", () => {
-  let owner, addr1, addr2;
+  let owner, addr1;
   let token1, token2;
   let aggregatorV3, defiConsumerV3;
+  const priceFeedRatio = "4";
 
   beforeEach(async () => {
-    [owner, addr1, addr2] = await ethers.getSigners();
+    [owner, addr1] = await ethers.getSigners();
 
     // Deploy mock ERC20 tokens;
     const ERC20Mock = new ethers.ContractFactory(
@@ -31,7 +33,9 @@ describe("DefiConsumerV3", () => {
       AggregatorV3MockJSON.bytecode,
       owner
     );
-    aggregatorV3 = await AggregatorV3Mock.deploy(ethers.parseEther("0.01"));
+    aggregatorV3 = await AggregatorV3Mock.deploy(
+      ethers.parseEther(priceFeedRatio)
+    );
     console.log("Deployed Aggregator", await aggregatorV3.getAddress());
 
     // Deploy Defi contract
@@ -49,6 +53,8 @@ describe("DefiConsumerV3", () => {
   });
 
   describe("Test swap functionality", () => {
+    let input;
+
     beforeEach(async () => {
       // Log addresses
       console.log("Before setting up....");
@@ -70,11 +76,15 @@ describe("DefiConsumerV3", () => {
       );
 
       // Fund addr1 with token 1
-      token1.connect(owner).transfer(await addr1.getAddress(), 30);
+      await token1.connect(owner).transfer(await addr1.getAddress(), 30);
 
       // Fund DeFi contract with token2 via abi
-      token2.connect(owner).approve(await defiConsumerV3.getAddress(), 50);
-      defiConsumerV3.connect(owner).depositToken(await token2.getAddress(), 50);
+      await token2
+        .connect(owner)
+        .approve(await defiConsumerV3.getAddress(), 50);
+      await defiConsumerV3
+        .connect(owner)
+        .depositToken(await token2.getAddress(), 50);
 
       // Log addresses
       console.log("After setting up....");
@@ -91,11 +101,31 @@ describe("DefiConsumerV3", () => {
         await token2.balanceOf(await owner.getAddress())
       );
       console.log(
-        "DeFiConsumverV3's token2 balance",
+        "DeFiConsumerV3's token2 balance",
         await token2.balanceOf(await defiConsumerV3.getAddress())
       );
     });
 
-    it("Should swap Token 1 for Token 2 based on Oracle price", async () => {});
+    it("Should swap Token 1 for Token 2 based on Oracle price", async () => {
+      input = 10;
+      await token1
+        .connect(addr1)
+        .approve(await defiConsumerV3.getAddress(), input);
+      await defiConsumerV3
+        .connect(addr1)
+        .swapTokens(
+          await token1.getAddress(),
+          await token2.getAddress(),
+          input
+        );
+      expect(await token1.balanceOf(await addr1.getAddress())).to.equal(20);
+      expect(
+        await token1.balanceOf(await defiConsumerV3.getAddress())
+      ).to.equal(10);
+      expect(await token2.balanceOf(await addr1.getAddress())).to.equal(40);
+      expect(
+        await token2.balanceOf(await defiConsumerV3.getAddress())
+      ).to.equal(10);
+    });
   });
 });
