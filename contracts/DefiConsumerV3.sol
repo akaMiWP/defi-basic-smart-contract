@@ -16,24 +16,6 @@ contract DefiConsumerV3 is Ownable {
     mapping(string => AggregatorV3Interface) public priceFeeds;
 
     constructor(PriceFeedPair[] memory priceFeedPairs) {
-        // priceFeeds["BTC/ETH"] = AggregatorV3Interface(
-        //     0x5fb1616F78dA7aFC9FF79e0371741a747D2a7F22
-        // );
-        // priceFeeds["BTC/USD"] = AggregatorV3Interface(
-        //     0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43
-        // );
-        // priceFeeds["DAI/USD"] = AggregatorV3Interface(
-        //     0x14866185B1962B63C3Ea9E03Bc1da838bab34C19
-        // );
-        // priceFeeds["ETH/USD"] = AggregatorV3Interface(
-        //     0x694AA1769357215DE4FAC081bf1f309aDC325306
-        // );
-        // priceFeeds["LINK/ETH"] = AggregatorV3Interface(
-        //     0x42585eD362B3f1BCa95c640FdFf35Ef899212734
-        // );
-        // priceFeeds["LINK/USD"] = AggregatorV3Interface(
-        //     0xc59E3633BAAC79493d908e63626716e204A45EdF
-        // );
         for (uint i = 0; i < priceFeedPairs.length; i++) {
             priceFeeds[priceFeedPairs[i].ticker] = AggregatorV3Interface(
                 priceFeedPairs[i].aggregatorAddress
@@ -79,6 +61,7 @@ contract DefiConsumerV3 is Ownable {
         uint8 token2Decimals = IERC20Metadata(token2).decimals();
         uint256 amountOfToken2 = (amount * uint256(price)) /
             (10 ** (18 + token1Decimals - token2Decimals));
+        require(amountOfToken2 > 0, "Amount of tokens is too small");
         require(IERC20(token1).transferFrom(msg.sender, address(this), amount));
         require(IERC20(token2).transfer(msg.sender, amountOfToken2));
     }
