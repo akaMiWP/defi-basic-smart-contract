@@ -52,6 +52,16 @@ describe("DefiConsumerV3", () => {
     console.log("Deployed DefiConsumerV3", await defiConsumerV3.getAddress());
   });
 
+  describe("Test get price feed from pair functionality", () => {
+    it("expect the function to return the price feed ratio", async () => {
+      const priceFeed = await defiConsumerV3.getPriceFeedFromPair(
+        await token1.getAddress(),
+        await token2.getAddress()
+      );
+      expect(priceFeed).to.equal(ethers.parseEther(priceFeedRatio));
+    });
+  });
+
   describe("Test swap functionality", () => {
     let input;
 

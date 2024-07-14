@@ -23,7 +23,7 @@ contract DefiConsumerV3 is Ownable {
         }
     }
 
-    function getChainlinkDataFeedLatestAnswer(
+    function getPriceFeedFromPair(
         address token1,
         address token2
     ) public view returns (int) {
@@ -55,7 +55,7 @@ contract DefiConsumerV3 is Ownable {
         address token2,
         uint256 amount // parse in the smallest units
     ) external {
-        int256 price = getChainlinkDataFeedLatestAnswer(token1, token2);
+        int256 price = getPriceFeedFromPair(token1, token2);
         require(price > 0, "Invalid price");
         uint8 token1Decimals = IERC20Metadata(token1).decimals();
         uint8 token2Decimals = IERC20Metadata(token2).decimals();
