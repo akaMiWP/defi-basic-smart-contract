@@ -18,28 +18,52 @@ async function main() {
 
   const priceFeeds = [
     {
-      ticker: "BTC/ETH",
-      aggregatorAddress: "0x5fb1616F78dA7aFC9FF79e0371741a747D2a7F22",
+      ticker: "SBR/GDR",
+      aggregatorAddress: process.env.SBR_GDR_TOKEN_ADDRESS,
     },
     {
-      ticker: "BTC/USD",
-      aggregatorAddress: "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43",
+      ticker: "SBR/SMY",
+      aggregatorAddress: process.env.SBR_SMY_TOKEN_ADDRESS,
     },
     {
-      ticker: "DAI/USD",
-      aggregatorAddress: "0x14866185B1962B63C3Ea9E03Bc1da838bab34C19",
+      ticker: "SBR/BDC",
+      aggregatorAddress: process.env.SBR_BDC_TOKEN_ADDRESS,
     },
     {
-      ticker: "ETH/USD",
-      aggregatorAddress: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
+      ticker: "GDR/SBR",
+      aggregatorAddress: process.env.GDR_SBR_TOKEN_ADDRESS,
     },
     {
-      ticker: "LINK/ETH",
-      aggregatorAddress: "0x42585eD362B3f1BCa95c640FdFf35Ef899212734",
+      ticker: "GDR/SMY",
+      aggregatorAddress: process.env.GDR_SMY_TOKEN_ADDRESS,
     },
     {
-      ticker: "LINK/USD",
-      aggregatorAddress: "0xc59E3633BAAC79493d908e63626716e204A45EdF",
+      ticker: "GDR/BDC",
+      aggregatorAddress: process.env.GDR_BDC_TOKEN_ADDRESS,
+    },
+    {
+      ticker: "SMY/SBR",
+      aggregatorAddress: process.env.SMY_SBR_TOKEN_ADDRESS,
+    },
+    {
+      ticker: "SMY/GDR",
+      aggregatorAddress: process.env.SMY_GDR_TOKEN_ADDRESS,
+    },
+    {
+      ticker: "SMY/BDC",
+      aggregatorAddress: process.env.SMY_BDC_TOKEN_ADDRESS,
+    },
+    {
+      ticker: "BDC/SBR",
+      aggregatorAddress: process.env.BDC_SBR_TOKEN_ADDRESS,
+    },
+    {
+      ticker: "BDC/GDR",
+      aggregatorAddress: process.env.BDC_GDR_TOKEN_ADDRESS,
+    },
+    {
+      ticker: "BDC/SMY",
+      aggregatorAddress: process.env.BDC_SMY_TOKEN_ADDRESS,
     },
   ];
   const contract = await ContractFactory.deploy(priceFeeds);
