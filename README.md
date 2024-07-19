@@ -1,6 +1,6 @@
 # DeFi basic smart contract
 
-In this project, it contains smart contract files necessary to create a very simple version of how DeFi smart contract.
+In this project, it contains smart contract files necessary to create a very simple version for DeFi smart contract.
 The contract mainly consists of two functionalities which are swapping tokens and retriving price feed of each ERC20 token pair
 
 ## High-level Overview
